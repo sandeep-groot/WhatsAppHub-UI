@@ -1,7 +1,4 @@
-/**
- * Layout for auth routes
- * All auth pages (login, signup, forgot-password) use this layout
- */
+"use client";
 
 export const metadata = {
   title: "Authentication | WhatsAppHub",
@@ -9,7 +6,7 @@ export const metadata = {
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-gray-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="w-full max-w-md">{children}</div>
     </div>
   );
