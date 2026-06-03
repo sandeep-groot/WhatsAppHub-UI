@@ -1,14 +1,15 @@
 import SignInForm from "@/components/auth/SignInForm";
+import { Suspense } from "react";
 
 export const metadata = {
-  title: "Login | WhatsAppHub",
+  title: "Sign In | WhatsAppHub",
   description: "Sign in to your WhatsAppHub account",
 };
 
 export default function LoginPage() {
   return (
-    <div>
+    <Suspense fallback={null}>
       <SignInForm />
-    </div>
+    </Suspense>
   );
 }

@@ -1,40 +1,125 @@
-// Auth components - SignInForm
 "use client";
 
+import AuthFormShell from "@/components/auth/AuthFormShell";
+import Checkbox from "@/components/form/input/Checkbox";
+import Input from "@/components/form/input/InputField";
+import Label from "@/components/form/Label";
+import Button from "@/components/ui/button/Button";
+import { useAuth } from "@/context/AuthContext";
+import { EyeCloseIcon, EyeIcon } from "@/icons";
+import { PAGE_ROUTES } from "@/lib/constants";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useLogin } from "@/modules/auth/client/hooks";
-import { Input } from "@/components/ui";
-import { Button } from "@/components/ui";
+
+const linkClass =
+  "font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300";
 
 export default function SignInForm() {
+  const { login } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useLogin();
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login({ email, password });
-  };
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      await login(email.trim(), password);
+      const destination =
+        redirect && redirect.startsWith("/") ? redirect : PAGE_ROUTES.DASHBOARD;
+      router.replace(destination);
+    } catch {
+      setError("Unable to sign in. Please check your credentials and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input
-        type="email"
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <Input
-        type="password"
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <Button type="submit" className="w-full">
-        Sign In
-      </Button>
-    </form>
+    <AuthFormShell
+      title="Sign In"
+      description="Enter your email and password to sign in!"
+      footer={
+        null
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-5">
+          {error && (
+            <div className="rounded-lg border border-error-200 bg-error-50 px-4 py-3 dark:border-error-500/30 dark:bg-error-500/10">
+              <p className="text-sm text-error-600 dark:text-error-400" role="alert">
+                {error}
+              </p>
+            </div>
+          )}
+          <div>
+            <Label>
+              Email <span className="text-error-500">*</span>
+            </Label>
+            <Input
+              type="email"
+              name="email"
+              placeholder="info@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={Boolean(error)}
+              disabled={isSubmitting}
+            />
+          </div>
+          <div>
+            <Label>
+              Password <span className="text-error-500">*</span>
+            </Label>
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={Boolean(error)}
+                disabled={isSubmitting}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeIcon className="h-5 w-5 fill-current" />
+                ) : (
+                  <EyeCloseIcon className="h-5 w-5 fill-current" />
+                )}
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Checkbox checked={isChecked} onChange={setIsChecked} />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Keep me logged in
+              </span>
+            </div>
+            <Link href={PAGE_ROUTES.FORGOT_PASSWORD} className={`text-sm ${linkClass}`}>
+              Forgot password?
+            </Link>
+          </div>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign In"}
+          </Button>
+        </div>
+      </form>
+    </AuthFormShell>
   );
 }

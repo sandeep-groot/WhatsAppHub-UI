@@ -10,9 +10,6 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath: "./tsconfig.json",
   },
-  eslint: {
-    dirs: ["src"],
-  },
   // Add your custom redirects/headers using src/proxy.ts
   // Or configure them directly here
 };

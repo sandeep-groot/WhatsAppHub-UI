@@ -6,9 +6,5 @@ export const metadata = {
 };
 
 export default function SignUpPage() {
-  return (
-    <div>
-      <SignUpForm />
-    </div>
-  );
+  return <SignUpForm />;
 }
