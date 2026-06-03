@@ -4,6 +4,7 @@
  */
 
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { API_ROUTES } from "@/lib/constants";
 import { apiFetch } from "@/lib/http";
 import { queryKeys } from "@/query/keys";
 
@@ -12,7 +13,7 @@ export function useUsers() {
   return useQuery({
     queryKey: queryKeys.users.list(),
     queryFn: async () => {
-      return apiFetch(`/api/users`);
+      return apiFetch(API_ROUTES.USERS);
     },
   });
 }
@@ -20,10 +21,10 @@ export function useUsers() {
 // Example: Create user mutation hook
 export function useCreateUser() {
   return useMutation({
-    mutationFn: async (data: any) => {
-      return apiFetch(`/api/users`, {
+    mutationFn: async (data: unknown) => {
+      return apiFetch(API_ROUTES.USERS, {
         method: "POST",
-        body: JSON.stringify(data),
+        data,
       });
     },
   });
@@ -34,7 +35,7 @@ export function useUser(id: string) {
   return useQuery({
     queryKey: queryKeys.users.detail(id),
     queryFn: async () => {
-      return apiFetch(`/api/users/${id}`);
+      return apiFetch(`${API_ROUTES.USERS}/${id}`);
     },
     enabled: !!id,
   });

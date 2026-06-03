@@ -11,6 +11,7 @@ const AppHeader: React.FC = () => {
   const { toggleMobileSidebar } = useSidebar();
   const { isDark, toggleTheme } = useTheme();
   const displayName = user?.name || user?.email?.split("@")[0] || "User";
+  const roleLabel = user?.roles ? user.roles.join(", ") : "";
   const displayEmail = user?.email ?? "";
   const avatarLetter = (displayName[0] ?? "U").toUpperCase();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -131,6 +132,11 @@ const AppHeader: React.FC = () => {
               <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                 {displayName}
               </span>
+              {roleLabel && (
+                <span className="hidden md:block text-xs text-emerald-600 dark:text-emerald-400">
+                  ({roleLabel})
+                </span>
+              )}
               <svg className="hidden md:block w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <path d="M6 9l6 6 6-6" />
               </svg>

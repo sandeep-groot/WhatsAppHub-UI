@@ -7,20 +7,22 @@ import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { useAuth } from "@/context/AuthContext";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import { SESSION_EXPIRED_MESSAGE } from "@/lib/auth/session-events";
 import { PAGE_ROUTES } from "@/lib/constants";
 import { ApiError } from "@/lib/http";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const linkClass =
   "font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300";
 
 export default function SignInForm() {
-  const { login } = useAuth();
+  const { login, sessionExpiredMessage, clearSessionExpiredMessage } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
+  const sessionExpired = searchParams.get("sessionExpired");
 
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -28,6 +30,13 @@ export default function SignInForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (sessionExpired === "1") {
+      setError(sessionExpiredMessage ?? SESSION_EXPIRED_MESSAGE);
+      clearSessionExpiredMessage();
+    }
+  }, [sessionExpired, sessionExpiredMessage, clearSessionExpiredMessage]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

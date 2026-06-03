@@ -2,14 +2,19 @@
  * Auth module types
  */
 
-export interface User {
+export interface AuthUser {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  roles: string[];
+}
+
+export interface User extends AuthUser {
   name: string;
   avatar?: string;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface LoginRequest {
@@ -18,9 +23,9 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  user: User;
-  token: string;
+  accessToken: string;
   refreshToken: string;
+  user: AuthUser;
 }
 
 export interface SignupRequest {

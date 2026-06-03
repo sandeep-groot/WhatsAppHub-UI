@@ -4,28 +4,48 @@
 
 "use client";
 
-import { useCallback } from "react";
-import { LoginRequest, LoginResponse } from "../types";
+import { useAuth } from "@/context/AuthContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/query/keys";
+import type { LoginRequest } from "../types";
 
 export function useLogin() {
-  const login = useCallback(async (credentials: LoginRequest) => {
-    // Implement login logic
-    console.log("Login with:", credentials);
-  }, []);
+  const { login } = useAuth();
+  const queryClient = useQueryClient();
 
-  return { login };
+  const mutation = useMutation({
+    mutationFn: (credentials: LoginRequest) =>
+      login(credentials.email, credentials.password),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.auth.me() });
+    },
+  });
+
+  return {
+    login: mutation.mutateAsync,
+    isPending: mutation.isPending,
+    error: mutation.error,
+  };
 }
 
 export function useLogout() {
-  const logout = useCallback(async () => {
-    // Implement logout logic
-    console.log("Logging out");
-  }, []);
+  const { logout } = useAuth();
 
   return { logout };
 }
 
 export function useCurrentUser() {
-  // Get current user from session/context
-  return { user: null, isLoading: false };
+  const { user, isLoading, refreshUser } = useAuth();
+
+  const query = useQuery({
+    queryKey: queryKeys.auth.me(),
+    queryFn: refreshUser,
+    enabled: false,
+  });
+
+  return {
+    user,
+    isLoading,
+    refetch: query.refetch,
+  };
 }

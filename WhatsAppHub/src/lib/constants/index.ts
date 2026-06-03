@@ -7,16 +7,17 @@ export const APP_VERSION = "1.0.0";
 
 export const API_ROUTES = {
   AUTH: {
-    LOGIN: "/api/auth/login",
-    LOGOUT: "/api/auth/logout",
-    SIGNUP: "/api/auth/signup",
-    REFRESH: "/api/auth/refresh",
+    LOGIN: "/auth/login",
+    ME: "/auth/me",
+    LOGOUT: "/auth/logout",
+    SIGNUP: "/auth/signup",
+    REFRESH: "/auth/refresh",
   },
-  CLIENTS: "/api/clients",
-  WEBHOOKS: "/api/webhooks",
-  USERS: "/api/users",
-  ROLES: "/api/roles",
-  AUDIT_LOGS: "/api/audit-logs",
+  CLIENTS: "/clients",
+  WEBHOOKS: "/webhooks",
+  USERS: "/users",
+  ROLES: "/roles",
+  AUDIT_LOGS: "/audit-logs",
 } as const;
 
 export const PAGE_ROUTES = {

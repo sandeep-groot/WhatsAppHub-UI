@@ -15,8 +15,12 @@ const REFRESH_TOKEN_KEY = "refresh_token";
 const USER_KEY = "auth_user";
 
 export interface StoredAuthUser {
+  id: string;
   email: string;
-  name?: string;
+  firstName: string;
+  lastName: string;
+  roles: string[];
+  name: string;
 }
 
 const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 7; // 7 days
@@ -58,10 +62,18 @@ export function setAuthSession(
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   }
   document.cookie = `${AUTH_SESSION_COOKIE}=1; path=/; max-age=${SESSION_MAX_AGE_SEC}; SameSite=Lax`;
+  if (isBrowser()) {
+    void import("./token-refresh").then(({ startProactiveRefresh }) => {
+      startProactiveRefresh(token);
+    });
+  }
 }
 
 export function clearAuthSession(): void {
   if (!isBrowser()) return;
+  void import("./token-refresh").then(({ stopProactiveRefresh }) => {
+    stopProactiveRefresh();
+  });
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(USER_KEY);

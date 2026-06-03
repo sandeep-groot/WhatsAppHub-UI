@@ -1,47 +1,44 @@
 import { API_ROUTES } from "@/lib/constants";
-import { ApiError, apiFetch } from "@/lib/http";
-import type { LoginResponse } from "@/modules/auth/types";
-import { setAuthSession, type StoredAuthUser } from "./index";
+import { apiFetch } from "@/lib/http";
+import type { AuthUser, LoginResponse } from "@/modules/auth/types";
+import {
+  getAuthToken,
+  setAuthSession,
+  type StoredAuthUser,
+} from "./index";
+import { refreshAccessToken } from "./token-refresh";
+import { toStoredUser } from "./user-mapper";
 
-/**
- * Sign in via API when available; falls back to a dev session when the auth API is not deployed.
- */
+export { toStoredUser } from "./user-mapper";
+
+/** Stores tokens from login; user profile is loaded via getCurrentUser (ME API). */
 export async function loginWithCredentials(
   email: string,
   password: string,
-): Promise<StoredAuthUser> {
-  try {
-    const data = await apiFetch<LoginResponse>(API_ROUTES.AUTH.LOGIN, {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
+): Promise<void> {
+  const data = await apiFetch<LoginResponse>(API_ROUTES.AUTH.LOGIN, {
+    method: "POST",
+    data: { email, password },
+    skipAuth: true,
+    skipAuthRefresh: true,
+  });
 
-    const user: StoredAuthUser = {
-      email: data.user.email,
-      name: data.user.name,
-    };
-    setAuthSession(data.token, user, data.refreshToken);
-    return user;
-  } catch (err) {
-    if (
-      err instanceof ApiError &&
-      (err.status === 404 || err.status === 502 || err.status === 503)
-    ) {
-      return loginDevFallback(email, password);
-    }
-    if (err instanceof TypeError) {
-      // Network / fetch failed (API not running)
-      return loginDevFallback(email, password);
-    }
-    throw err;
-  }
+  const placeholder = toStoredUser(data.user);
+  setAuthSession(data.accessToken, placeholder, data.refreshToken);
 }
 
-function loginDevFallback(email: string, password: string): StoredAuthUser {
-  if (!email.trim() || !password) {
-    throw new ApiError(400, "Email and password are required.");
+export async function getCurrentUser(): Promise<StoredAuthUser> {
+  const profile = await apiFetch<AuthUser>(API_ROUTES.AUTH.ME);
+  const user = toStoredUser(profile);
+
+  const token = getAuthToken();
+  if (token) {
+    setAuthSession(token, user);
   }
-  const user: StoredAuthUser = { email: email.trim() };
-  setAuthSession(`dev-${Date.now()}`, user);
+
   return user;
+}
+
+export async function refreshSession(): Promise<boolean> {
+  return refreshAccessToken();
 }

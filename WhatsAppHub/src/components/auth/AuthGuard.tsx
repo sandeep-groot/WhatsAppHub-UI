@@ -1,9 +1,9 @@
 "use client";
 
-import { isAuthenticated } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 import { PAGE_ROUTES } from "@/lib/constants";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -12,36 +12,34 @@ interface AuthGuardProps {
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [allowed, setAllowed] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    const authed = isAuthenticated();
-    if (!authed) {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
       const loginUrl = new URL(PAGE_ROUTES.LOGIN, window.location.origin);
       if (pathname && pathname !== PAGE_ROUTES.LOGIN) {
         loginUrl.searchParams.set("redirect", pathname);
       }
       router.replace(loginUrl.pathname + loginUrl.search);
-      setAllowed(false);
-    } else {
-      setAllowed(true);
     }
-    setIsChecking(false);
-  }, [pathname, router]);
+  }, [isAuthenticated, isLoading, pathname, router]);
 
-  if (isChecking) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
-          <p className="text-sm text-gray-500 dark:text-gray-400">Loading...</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Verifying session...
+          </p>
         </div>
       </div>
     );
   }
 
-  if (!allowed) {
+  if (!isAuthenticated) {
     return null;
   }
 
