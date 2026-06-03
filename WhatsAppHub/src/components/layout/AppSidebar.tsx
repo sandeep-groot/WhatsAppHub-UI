@@ -93,12 +93,12 @@ const managementItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { isExpanded, isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const pathname = usePathname();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const isActive = (path?: string) => pathname === path;
-  const show = isExpanded || isHovered;
+  const show = isExpanded;
 
   // Icon box wrapper — gray bg normally, brand blue when active
   const iconBox = (active: boolean) =>
@@ -178,10 +178,8 @@ const AppSidebar: React.FC = () => {
 
       <aside
         className={`relative flex-shrink-0 hidden lg:flex flex-col h-screen bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${
-          isExpanded || isHovered ? "w-64" : "w-[72px]"
+          isExpanded ? "w-64" : "w-[72px]"
         }`}
-        onMouseEnter={() => !isExpanded && setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Collapse toggle */}
         <button
