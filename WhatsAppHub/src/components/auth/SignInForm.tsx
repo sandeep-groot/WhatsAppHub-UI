@@ -8,6 +8,7 @@ import Button from "@/components/ui/button/Button";
 import { useAuth } from "@/context/AuthContext";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { PAGE_ROUTES } from "@/lib/constants";
+import { ApiError } from "@/lib/http";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -38,8 +39,12 @@ export default function SignInForm() {
       const destination =
         redirect && redirect.startsWith("/") ? redirect : PAGE_ROUTES.DASHBOARD;
       router.replace(destination);
-    } catch {
-      setError("Unable to sign in. Please check your credentials and try again.");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("Unable to sign in. Please check your credentials and try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

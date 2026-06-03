@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath: "./tsconfig.json",
   },
-  // Add your custom redirects/headers using src/proxy.ts
-  // Or configure them directly here
+  turbopack: {
+    root: process.cwd(),
+  },
 };
 
 export default nextConfig;

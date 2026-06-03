@@ -2,12 +2,17 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { useTheme } from "@/context/ThemeContext";
 
 const AppHeader: React.FC = () => {
+  const { user, logout } = useAuth();
   const { toggleMobileSidebar } = useSidebar();
   const { isDark, toggleTheme } = useTheme();
+  const displayName = user?.name || user?.email?.split("@")[0] || "User";
+  const displayEmail = user?.email ?? "";
+  const avatarLetter = (displayName[0] ?? "U").toUpperCase();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -121,9 +126,11 @@ const AppHeader: React.FC = () => {
               className="group flex items-center gap-2 p-1.5 hover:bg-emerald-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <div className="w-8 h-8 bg-emerald-500 group-hover:bg-emerald-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 transition-colors ring-2 ring-transparent group-hover:ring-emerald-200 dark:group-hover:ring-emerald-800">
-                S
+                {avatarLetter}
               </div>
-              <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Sandeep</span>
+              <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                {displayName}
+              </span>
               <svg className="hidden md:block w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <path d="M6 9l6 6 6-6" />
               </svg>
@@ -131,8 +138,8 @@ const AppHeader: React.FC = () => {
             {isUserMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">Sandeep Gill</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">sandeep@example.com</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{displayName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{displayEmail}</p>
                 </div>
                 <ul>
                   <li>
@@ -142,7 +149,14 @@ const AppHeader: React.FC = () => {
                     <Link href="#" className="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors">Settings</Link>
                   </li>
                   <li className="border-t border-gray-100 dark:border-gray-700">
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
                       Logout
                     </button>
                   </li>
