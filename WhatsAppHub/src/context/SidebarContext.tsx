@@ -5,8 +5,6 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 interface SidebarContextType {
   isExpanded: boolean;
   isMobileOpen: boolean;
-  isHovered: boolean;
-  setIsHovered: (value: boolean) => void;
   toggleSidebar: () => void;
   toggleMobileSidebar: () => void;
 }
@@ -16,7 +14,6 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const toggleSidebar = useCallback(() => {
     setIsExpanded((prev) => !prev);
@@ -31,8 +28,6 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
       value={{
         isExpanded,
         isMobileOpen,
-        isHovered,
-        setIsHovered,
         toggleSidebar,
         toggleMobileSidebar,
       }}
