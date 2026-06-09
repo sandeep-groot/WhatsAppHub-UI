@@ -6,6 +6,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
+import PrivacyPolicyLink from "@/components/common/PrivacyPolicyLink";
 import { PAGE_ROUTES } from "@/lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -144,10 +145,7 @@ export default function SignUpForm() {
               <Link href="#" className={linkClass}>
                 Terms and Conditions
               </Link>
-              , and our{" "}
-              <Link href="#" className={linkClass}>
-                Privacy Policy
-              </Link>
+              , and our <PrivacyPolicyLink />
             </p>
           </div>
           <Button type="submit" disabled={isSubmitting}>

@@ -6,3 +6,4 @@
 export * from "./breadcrumb";
 export * from "./status-badge";
 export * from "./empty-state";
+export { default as PrivacyPolicyLink } from "./PrivacyPolicyLink";

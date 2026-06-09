@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import PrivacyPolicyLink from "@/components/common/PrivacyPolicyLink";
 import { useSidebar } from "@/context/SidebarContext";
 import { PAGE_ROUTES } from "@/lib/constants";
 
@@ -69,6 +70,15 @@ const AuditIcon = () => (
     <line x1="16" y1="13" x2="8" y2="13" />
     <line x1="16" y1="17" x2="8" y2="17" />
     <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
+const PolicyIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
   </svg>
 );
 
@@ -232,6 +242,19 @@ const AppSidebar: React.FC = () => {
             </span>
             {show && <span>Settings</span>}
           </Link>
+          <div className={`mt-3 px-2 ${show ? "" : "flex justify-center"}`}>
+            {show ? (
+              <PrivacyPolicyLink className="text-xs text-gray-500 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400" />
+            ) : (
+              <Link
+                href={PAGE_ROUTES.PRIVACY}
+                title="Privacy Policy"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-emerald-50 hover:text-emerald-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-emerald-400"
+              >
+                <PolicyIcon />
+              </Link>
+            )}
+          </div>
         </div>
       </aside>
 
@@ -268,6 +291,9 @@ const AppSidebar: React.FC = () => {
             </span>
             <span>Settings</span>
           </Link>
+          <div className="mt-3 px-2">
+            <PrivacyPolicyLink className="text-xs text-gray-500 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400" />
+          </div>
         </div>
       </aside>
     </>

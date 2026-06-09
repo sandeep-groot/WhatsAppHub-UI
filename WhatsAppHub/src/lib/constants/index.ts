@@ -24,6 +24,7 @@ export const PAGE_ROUTES = {
   LOGIN: "/login",
   SIGNUP: "/signup",
   FORGOT_PASSWORD: "/forgot-password",
+  PRIVACY: "/privacy",
   DASHBOARD: "/dashboard",
   CLIENTS: "/clients",
   ONBOARDING: "/onboarding",

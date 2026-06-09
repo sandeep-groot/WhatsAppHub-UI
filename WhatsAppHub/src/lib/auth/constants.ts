@@ -5,6 +5,7 @@ export const AUTH_PUBLIC_PATHS = [
   "/login",
   "/signup",
   "/forgot-password",
+  "/privacy",
 ] as const;
 
 export function isPublicPath(pathname: string): boolean {
