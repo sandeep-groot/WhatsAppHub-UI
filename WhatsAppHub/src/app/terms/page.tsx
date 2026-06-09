@@ -5,11 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: `Privacy Policy | ${env.NEXT_PUBLIC_APP_NAME}`,
-  description: `Privacy Policy for ${env.NEXT_PUBLIC_APP_NAME}`,
+  title: `Terms of Service | ${env.NEXT_PUBLIC_APP_NAME}`,
+  description: `Terms of Service for ${env.NEXT_PUBLIC_APP_NAME}`,
 };
 
-export default function PrivacyPage() {
+export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -36,21 +36,34 @@ export default function PrivacyPage() {
 
       <main className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Privacy Policy
+          Terms of Service
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Last updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          Last updated:{" "}
+          {new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
         </p>
 
         <div className="mt-8 space-y-6 text-gray-700 dark:text-gray-300">
           <p>
-            We collect and process WhatsApp Business onboarding data solely for
-            providing messaging and onboarding services through{" "}
-            {env.NEXT_PUBLIC_APP_NAME}.
+            By using {env.NEXT_PUBLIC_APP_NAME}, you agree to comply with all
+            applicable laws and Meta WhatsApp Business policies.
           </p>
 
           <p>
-            We do not sell personal information to third parties.
+            Users are responsible for the content and messaging activity
+            conducted through connected WhatsApp Business accounts.
+          </p>
+
+          <p>
+            We may suspend access for abuse, spam, or policy violations.
+          </p>
+
+          <p>
+            The service is provided &quot;as is&quot; without warranties.
           </p>
 
           <section>
@@ -58,7 +71,7 @@ export default function PrivacyPage() {
               Contact
             </h2>
             <p className="mt-2">
-              If you have questions about this policy, contact us at{" "}
+              If you have questions about these terms, contact us at{" "}
               <a
                 href="mailto:info@grootsoftwares.com"
                 className="font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
@@ -78,10 +91,10 @@ export default function PrivacyPage() {
             Data Deletion Instructions
           </Link>
           <Link
-            href={PAGE_ROUTES.TERMS}
+            href={PAGE_ROUTES.PRIVACY}
             className="font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
           >
-            Terms of Service
+            Privacy Policy
           </Link>
           <Link
             href={PAGE_ROUTES.LOGIN}
